@@ -1,7 +1,5 @@
 package com.anosym.common.converter;
 
-import com.anosym.common.converter.Converter;
-import com.anosym.common.converter.ConverterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,7 +25,6 @@ public class CalendarConverter implements Converter<Calendar, String> {
         checkNotNull(value, "The calendar value must be null");
 
         final String format = formats == null ? DEFAULT_FORMAT : formats[0];
-        LOG.log(Level.INFO, "Format: {0}", format);
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat(format);
             return dateFormat.format(value.getTime());
