@@ -9,6 +9,7 @@ public enum TLD {
     COM("com"),
     CO_UK("co.uk"),
     CO_KE("co.ke"),
+    CO_ZA("co.za"),
     DE("de"),
     NET("net"),
     ORG("org"),
