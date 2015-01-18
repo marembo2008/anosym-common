@@ -256,7 +256,9 @@ public enum Country {
     WESTERN_SAHARA("EH", "ESH", "Western Sahara", " "), // 234
     YEMEN("YE", "YEM", "Yemen", "967"), // 235
     ZAMBIA("ZM", "ZMB", "Zambia", "260"), // 236
-    ZIMBABWE("ZW", "ZWE", "Zimbabwe", "263"); // 237
+    ZIMBABWE("ZW", "ZWE", "Zimbabwe", "263"), // 237
+    //Special handling of non-country regions
+    EUROPEAN_UNION("EU", "EU", "European Union", "300");
 
     private final String isoCode;
     private final String isoCode2;
@@ -306,9 +308,11 @@ public enum Country {
         return languages;
     }
 
+    @Nonnull
     public static Country fromIsoCode(@Nonnull final String isoCode) {
         checkArgument(!Strings.isNullOrEmpty(isoCode), "The isocode must not be null nor empty");
-        for (Country c : values()) {
+
+        for (final Country c : values()) {
             if (c.isoCode.equalsIgnoreCase(isoCode)) {
                 return c;
             }
@@ -316,9 +320,11 @@ public enum Country {
         throw new IllegalArgumentException("Unsupported country iso-code: " + isoCode);
     }
 
+    @Nonnull
     public static Country fromIsoCode2(@Nonnull final String isoCode2) {
         checkArgument(!Strings.isNullOrEmpty(isoCode2), "The isocode must not be null nor empty");
-        for (Country c : values()) {
+
+        for (final Country c : values()) {
             if (c.isoCode2.equalsIgnoreCase(isoCode2)) {
                 return c;
             }
