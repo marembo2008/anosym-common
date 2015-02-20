@@ -77,6 +77,8 @@ public abstract class Printable implements Serializable {
                 Object value = f.get(this);
                 if (value != null && Calendar.class.isAssignableFrom(type)) {
                     value = CALENDAR_CONVERTER.to((Calendar) value, "yyyy-MM-dd HH:mm:ss");
+                } else if (type.isArray() && value != null) {
+                    value = Arrays.toString((Object[]) value);
                 }
                 toStringHelper.add(f.getName(), value);
             } catch (final IllegalArgumentException | IllegalAccessException ex) {

@@ -364,7 +364,7 @@ public class BCrypt {
      * Encode a byte array using bcrypt's slightly-modified base64 encoding scheme. Note that this is *not* compatible
      * with the standard MIME-base64 encoding.
      *
-     * @param d	the byte array to encode
+     * @param d	  the byte array to encode
      * @param len	the number of bytes to encode
      * @return	base64-encoded string
      * @exception IllegalArgumentException if the length is invalid
@@ -420,7 +420,7 @@ public class BCrypt {
      * Decode a string encoded using bcrypt's base64 scheme to a byte array. Note that this is *not* compatible with the
      * standard MIME-base64 encoding.
      *
-     * @param s	the string to decode
+     * @param s	      the string to decode
      * @param maxolen	the maximum number of bytes to decode
      * @return	an array containing the decoded bytes
      * @throws IllegalArgumentException if maxolen is invalid
@@ -475,7 +475,7 @@ public class BCrypt {
     /**
      * Blowfish encipher a single 64-bit block encoded as two 32-bit halves
      *
-     * @param lr	an array containing the two 32-bit half blocks
+     * @param lr	 an array containing the two 32-bit half blocks
      * @param off	the position in the array of the blocks
      */
     private void encipher(int lr[], int off) {
@@ -563,7 +563,7 @@ public class BCrypt {
      * http://www.openbsd.org/papers/bcrypt-paper.ps
      *
      * @param data	salt information
-     * @param key	password information
+     * @param key	 password information
      */
     private void ekskey(byte data[], byte key[]) {
         int i;
@@ -595,8 +595,8 @@ public class BCrypt {
     /**
      * Perform the central password hashing step in the bcrypt scheme
      *
-     * @param password	the password to hash
-     * @param salt	the binary salt to hash with the password
+     * @param password	  the password to hash
+     * @param salt	      the binary salt to hash with the password
      * @param log_rounds	the binary logarithm of the number of rounds of hashing to apply
      * @return	an array containing the binary hashed password
      */
@@ -641,7 +641,7 @@ public class BCrypt {
      * Hash a password using the OpenBSD bcrypt scheme
      *
      * @param password	the password to hash
-     * @param salt	the salt to hash with (perhaps generated using BCrypt.gensalt)
+     * @param salt	    the salt to hash with (perhaps generated using BCrypt.gensalt)
      * @return	the hashed password
      */
     public static String hashpw(String password, String salt) {
@@ -703,8 +703,8 @@ public class BCrypt {
      * Generate a salt for use with the BCrypt.hashpw() method
      *
      * @param log_rounds	the log2 of the number of rounds of hashing to apply - the work factor therefore increases as
-     * 2**log_rounds.
-     * @param random	an instance of SecureRandom to use
+     *                   2**log_rounds.
+     * @param random	    an instance of SecureRandom to use
      * @return	an encoded salt value
      */
     public static String gensalt(int log_rounds, SecureRandom random) {
@@ -727,7 +727,7 @@ public class BCrypt {
      * Generate a salt for use with the BCrypt.hashpw() method
      *
      * @param log_rounds	the log2 of the number of rounds of hashing to apply - the work factor therefore increases as
-     * 2**log_rounds.
+     *                   2**log_rounds.
      * @return	an encoded salt value
      */
     public static String gensalt(int log_rounds) {
@@ -748,14 +748,10 @@ public class BCrypt {
      * Check that a plaintext password matches a previously hashed one
      *
      * @param plaintext	the plaintext password to verify
-     * @param hashed	the previously-hashed password
+     * @param hashed	   the previously-hashed password
      * @return	true if the passwords match, false otherwise
      */
     public static boolean checkpw(String plaintext, String hashed) {
         return (hashed.compareTo(hashpw(plaintext, hashed)) == 0);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(BCrypt.hashpw("pay@1234", BCrypt.gensalt()));
     }
 }
