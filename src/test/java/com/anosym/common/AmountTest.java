@@ -136,13 +136,13 @@ public class AmountTest {
     @Test
     public void testToString() {
         final Amount amount = new Amount(Currency.KES, 233448, NEAREST_TEN_CENTS);
-        assertThat(amount.toString(), is(equalTo("KSh 2334.50")));
+        assertThat(amount.toString(), is(equalTo("KES 2334.50")));
     }
 
     @Test
     public void testToStringNearestFiveCents() {
         final Amount amount = new Amount(Currency.KES, 233403, NEAREST_FIVE_CENTS);
-        assertThat(amount.toString(), is(equalTo("KSh 2334.05")));
+        assertThat(amount.toString(), is(equalTo("KES 2334.05")));
     }
 
     @Test
