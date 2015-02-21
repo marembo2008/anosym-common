@@ -2,6 +2,8 @@ package com.anosym.common;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
@@ -33,6 +35,10 @@ public final class Amount implements Comparable<Amount>, Serializable {
         this.currency = checkNotNull(currency, "The currency must not be null");
         this.centRoundingMode = checkNotNull(centRoundingMode, "The centRoundingMode must not be null");
         this.valueInCents = normalize(checkNotNull(valueInCents, "The value must not be null"));
+    }
+
+    public Amount(@Nonnull final Currency currency, @Nonnull final BigDecimal valueWithDecimalCents) {
+        this(currency, valueWithDecimalCents.doubleValue(), defaultCentRoundingMode());
     }
 
     public Amount(@Nonnull final Currency currency, @Nonnull final Double valueWithDecimalCents) {
@@ -101,6 +107,13 @@ public final class Amount implements Comparable<Amount>, Serializable {
     @Nonnull
     public CentRoundingMode getCentRoundingMode() {
         return centRoundingMode;
+    }
+
+    @Nonnull
+    public BigDecimal getValue() {
+        final double cents = valueInCents;
+        final double valueWithCents = cents / 100.0;
+        return BigDecimal.valueOf(valueWithCents).setScale(2, RoundingMode.UP);
     }
 
     @Nonnull
