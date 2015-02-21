@@ -190,7 +190,7 @@ public final class Amount implements Comparable<Amount>, Serializable {
 
     @Override
     public String toString() {
-        return format("%s %s", this.currency.getSymbol(), getToString());
+        return format("%s %s", this.currency.name(), getToString());
     }
 
     @Override
