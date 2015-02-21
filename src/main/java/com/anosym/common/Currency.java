@@ -63,7 +63,9 @@ public enum Currency {
         Country.ANDORRA, Country.AUSTRIA, Country.BELGIUM, Country.CYPRUS, Country.ESTONIA, Country.FINLAND,
         Country.FRANCE, Country.GERMANY, Country.GREECE, Country.IRELAND, Country.ITALY, Country.KOSOVO, Country.LATVIA,
         Country.LITHUANIA, Country.LUXEMBOURG, Country.MALTA, Country.MONACO, Country.MONTENEGRO, Country.NETHERLANDS,
-        Country.PORTUGAL, Country.SAN_MARINO, Country.SLOVAKIA, Country.SLOVENIA, Country.SPAIN, Country.HOLY_SEE_VATICAN_CITY_),
+        Country.PORTUGAL, Country.SAN_MARINO, Country.SLOVAKIA, Country.SLOVENIA, Country.SPAIN, Country.HOLY_SEE_VATICAN_CITY_,
+        //Even though not a country, but a region.
+        Country.EUROPEAN_UNION),
     FJD("Fiji Dollar", "$", Country.FIJI),
     FKP("Falkland Islands pound", "£", Country.FALKLAND_ISLANDS),
     GBP("Pound Sterling", "£", Country.UNITED_KINGDOM),
