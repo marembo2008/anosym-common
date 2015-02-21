@@ -189,7 +189,9 @@ public enum Currency {
     XPF("CFP Franc", "953", Country.FRENCH_POLYNESIA, Country.NEW_CALEDONIA, Country.WALLIS_AND_FUTUNA),
     YER("Yemeni Rial", "﷼", Country.YEMEN),
     ZAR("Rand", "S", Country.SOUTH_AFRICA),
-    ZMK("Kwacha", "894", Country.ZAMBIA);
+    ZMK("Kwacha", "894", Country.ZAMBIA),
+    //OLD Ghanaian Cedi
+    GHC("Cedi", "GH¢", Country.GHANA);
 
     private final String description;
     private final String symbol;
