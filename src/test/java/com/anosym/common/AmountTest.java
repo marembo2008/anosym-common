@@ -145,4 +145,11 @@ public class AmountTest {
         assertThat(amount.toString(), is(equalTo("KSh 2334.05")));
     }
 
+    @Test
+    public void testMultiplyByDouble() {
+        final Amount amount = new Amount(Currency.KES, 450080);
+        final Amount expected = new Amount(Currency.KES, 153027);
+        final Amount result = amount.multiply(0.34);
+        assertThat(result, is(expected));
+    }
 }

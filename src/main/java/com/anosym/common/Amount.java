@@ -151,6 +151,13 @@ public final class Amount implements Comparable<Amount>, Serializable {
     }
 
     @Nonnull
+    public final Amount multiply(@Nonnull final Number multiplicant) {
+
+        final Integer valueInCents = (int) (this.valueInCents * multiplicant.doubleValue());
+        return new Amount(this.currency, valueInCents);
+    }
+
+    @Nonnull
     public final Amount divide(@Nonnull final int dividor) {
 
         return new Amount(this.currency, this.valueInCents / dividor);
