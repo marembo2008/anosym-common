@@ -200,6 +200,10 @@ public final class Amount implements Comparable<Amount>, Serializable {
         return this.valueInCents.compareTo(o.valueInCents);
     }
 
+    public static Integer convertToCents(@Nonnull final Number amountsWithDecimalCents) {
+        return new Amount(Currency.AED, amountsWithDecimalCents.doubleValue()).getValueInCents();
+    }
+
     public static enum CentRoundingMode {
 
         NEAREST_CENT,
