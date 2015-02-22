@@ -6,6 +6,7 @@ import static com.anosym.common.Amount.CentRoundingMode.NEAREST_FIFTY_CENTS;
 import static com.anosym.common.Amount.CentRoundingMode.NEAREST_FIVE_CENTS;
 import static com.anosym.common.Amount.CentRoundingMode.NEAREST_HUNDRED_CENTS;
 import static com.anosym.common.Amount.CentRoundingMode.NEAREST_TEN_CENTS;
+import static com.anosym.common.Amount.CentRoundingMode.SPECIFIED_ACCURACY;
 import static com.anosym.common.Amount.GLOBAL_CENT_ROUNDING_MODE_PROPERTY;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -151,5 +152,12 @@ public class AmountTest {
         final Amount expected = new Amount(Currency.KES, 153027);
         final Amount result = amount.multiply(0.34);
         assertThat(result, is(expected));
+    }
+
+    @Test
+    public void testSpecifiedAccuracy() {
+        final Amount amount = new Amount(Currency.KES, 553.566224, SPECIFIED_ACCURACY, 10000);
+        final String expected = "KES 553.5662";
+        assertThat(amount.toString(), is(expected));
     }
 }

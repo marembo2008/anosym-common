@@ -7,8 +7,10 @@ import java.math.RoundingMode;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
+import static com.anosym.common.Amount.CentRoundingMode.SPECIFIED_ACCURACY;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Math.log10;
 import static java.lang.String.format;
 
 /**
@@ -20,36 +22,71 @@ public final class Amount implements Comparable<Amount>, Serializable {
     private static final long serialVersionUID = 12282948294L;
     @VisibleForTesting
     static final String GLOBAL_CENT_ROUNDING_MODE_PROPERTY = "com.anosym.amount.centRoundingMode";
+    @VisibleForTesting
+    static final String GLOBAL_ACCURACY_SCALE = "com.anosym.amount.accuracyScale";
 
     @Nonnull
     private final Currency currency;
     @Nonnull
     private final Integer valueInCents;
     private final CentRoundingMode centRoundingMode;
+    private final Integer accuracyScale;
 
     public Amount(@Nonnull final Currency currency, @Nonnull final Integer valueInCents) {
-        this(currency, valueInCents, defaultCentRoundingMode());
+        this(currency, valueInCents, defaultCentRoundingMode(), defaultAccuracyScale());
     }
 
-    public Amount(@Nonnull final Currency currency, @Nonnull final Integer valueInCents, @Nonnull final CentRoundingMode centRoundingMode) {
+    public Amount(@Nonnull final Currency currency,
+                  @Nonnull final Integer valueInCents,
+                  @Nonnull final CentRoundingMode centRoundingMode) {
+        this(currency, valueInCents, centRoundingMode, defaultAccuracyScale());
+    }
+
+    public Amount(@Nonnull final Currency currency,
+                  @Nonnull final Integer valueInCents,
+                  @Nonnull final CentRoundingMode centRoundingMode,
+                  @Nonnull final Integer accuracyScale) {
         this.currency = checkNotNull(currency, "The currency must not be null");
         this.centRoundingMode = checkNotNull(centRoundingMode, "The centRoundingMode must not be null");
         this.valueInCents = normalize(checkNotNull(valueInCents, "The value must not be null"));
+        this.accuracyScale = normalize(checkNotNull(accuracyScale, "The accuracyScale must not be null"));
+        checkAccuracyScaleAndMode();
     }
 
     public Amount(@Nonnull final Currency currency, @Nonnull final BigDecimal valueWithDecimalCents) {
-        this(currency, valueWithDecimalCents.doubleValue(), defaultCentRoundingMode());
+        this(currency, valueWithDecimalCents.doubleValue(), defaultCentRoundingMode(), defaultAccuracyScale());
     }
 
     public Amount(@Nonnull final Currency currency, @Nonnull final Double valueWithDecimalCents) {
-        this(currency, valueWithDecimalCents, defaultCentRoundingMode());
+        this(currency, valueWithDecimalCents, defaultCentRoundingMode(), defaultAccuracyScale());
     }
 
-    public Amount(@Nonnull final Currency currency, @Nonnull final Double valueWithDecimalCents, @Nonnull final CentRoundingMode centRoundingMode) {
+    public Amount(@Nonnull final Currency currency,
+                  @Nonnull final Double valueWithDecimalCents,
+                  @Nonnull final CentRoundingMode centRoundingMode) {
+        this(currency, valueWithDecimalCents, centRoundingMode, defaultAccuracyScale());
+    }
+
+    public Amount(@Nonnull final Currency currency,
+                  @Nonnull final Double valueWithDecimalCents,
+                  @Nonnull final CentRoundingMode centRoundingMode,
+                  @Nonnull final Integer accuracyScale) {
         this.currency = checkNotNull(currency, "The currency must not be null");
         this.centRoundingMode = checkNotNull(centRoundingMode, "The centRoundingMode must not be null");
-        final int truncatedCents = (int) (checkNotNull(valueWithDecimalCents, "The valueWithDecimalCents must not be null") * 100);
+        this.accuracyScale = normalize(checkNotNull(accuracyScale, "The accuracyScale must not be null"));
+        checkAccuracyScaleAndMode();
+
+        final int truncatedCents = (int) (checkNotNull(valueWithDecimalCents, "The valueWithDecimalCents must not be null") * accuracyScale);
         this.valueInCents = normalize(truncatedCents);
+
+    }
+
+    private void checkAccuracyScaleAndMode() {
+        final boolean invalidScale = centRoundingMode != SPECIFIED_ACCURACY && accuracyScale > 100;
+        final boolean invalidMode = centRoundingMode == SPECIFIED_ACCURACY && accuracyScale <= 100;
+        checkState(!invalidMode && !invalidScale,
+                   "The accuracy scale and cent roundingmode are invalid: {%s != %s}",
+                   centRoundingMode, accuracyScale);
     }
 
     private Integer normalize(@Nonnull final Integer valueInCents) {
@@ -94,6 +131,10 @@ public final class Amount implements Comparable<Amount>, Serializable {
         return CentRoundingMode.valueOf(System.getProperty(GLOBAL_CENT_ROUNDING_MODE_PROPERTY, "NEAREST_CENT").toUpperCase());
     }
 
+    private static Integer defaultAccuracyScale() {
+        return Integer.parseInt(System.getProperty(GLOBAL_ACCURACY_SCALE, "100"));
+    }
+
     @Nonnull
     public Currency getCurrency() {
         return currency;
@@ -112,8 +153,9 @@ public final class Amount implements Comparable<Amount>, Serializable {
     @Nonnull
     public BigDecimal getValue() {
         final double cents = valueInCents;
-        final double valueWithCents = cents / 100.0;
-        return BigDecimal.valueOf(valueWithCents).setScale(2, RoundingMode.UP);
+        final double valueWithCents = cents / accuracyScale;
+        final int scale = (int) log10(accuracyScale);
+        return BigDecimal.valueOf(valueWithCents).setScale(scale, RoundingMode.UP);
     }
 
     @Nonnull
@@ -183,9 +225,10 @@ public final class Amount implements Comparable<Amount>, Serializable {
     }
 
     private String getToString() {
-        final Integer wholeAmount = valueInCents / 100;
-        final Integer cents = valueInCents % 100;
-        return format("%d.%02d", wholeAmount, cents);
+        final Integer wholeAmount = valueInCents / accuracyScale;
+        final Integer cents = valueInCents % accuracyScale;
+        final int scale = (int) log10(accuracyScale);
+        return format("%d.%0" + scale + "d", wholeAmount, cents);
     }
 
     @Override
@@ -206,6 +249,7 @@ public final class Amount implements Comparable<Amount>, Serializable {
 
     public static enum CentRoundingMode {
 
+        SPECIFIED_ACCURACY, //Implies no rounding mode is done.
         NEAREST_CENT,
         NEAREST_FIVE_CENTS,
         NEAREST_TEN_CENTS,
