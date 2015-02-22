@@ -81,6 +81,14 @@ public final class Amount implements Comparable<Amount>, Serializable {
 
     }
 
+    public Amount(@Nonnull final Currency currency,
+                  @Nonnull final Number valueWithDecimalCents,
+                  @Nonnull final CentRoundingMode centRoundingMode,
+                  @Nonnull final Integer accuracyScale) {
+        this(currency, checkNotNull(valueWithDecimalCents, "The amount value must be specified").doubleValue(), centRoundingMode, accuracyScale);
+
+    }
+
     private void checkAccuracyScaleAndMode() {
         final boolean invalidScale = centRoundingMode != SPECIFIED_ACCURACY && accuracyScale > 100;
         final boolean invalidMode = centRoundingMode == SPECIFIED_ACCURACY && accuracyScale <= 100;
@@ -148,6 +156,11 @@ public final class Amount implements Comparable<Amount>, Serializable {
     @Nonnull
     public CentRoundingMode getCentRoundingMode() {
         return centRoundingMode;
+    }
+
+    @Nonnull
+    public Integer getAccuracyScale() {
+        return accuracyScale;
     }
 
     @Nonnull
