@@ -1,5 +1,6 @@
 package com.anosym.common;
 
+import org.junit.After;
 import org.junit.Test;
 
 import static com.anosym.common.Amount.CentRoundingMode.NEAREST_FIFTY_CENTS;
@@ -17,6 +18,11 @@ import static org.junit.Assert.assertThat;
  * @author marembo
  */
 public class AmountTest {
+
+    @After
+    public void tearDown() {
+        System.clearProperty(GLOBAL_CENT_ROUNDING_MODE_PROPERTY);
+    }
 
     @Test
     public void testNearestCent() {
@@ -131,7 +137,13 @@ public class AmountTest {
         System.setProperty(GLOBAL_CENT_ROUNDING_MODE_PROPERTY, "NEAREST_TEN_CENTS");
         final Amount amount = new Amount(Currency.AED, 2334.48);
         assertThat(amount.getValueInCents(), is(233450));
-        System.clearProperty(GLOBAL_CENT_ROUNDING_MODE_PROPERTY);
+    }
+
+    @Test
+    public void testNearestFiftyCentToTenDoubleFromGlobalCentRoundingMode() {
+        System.setProperty(GLOBAL_CENT_ROUNDING_MODE_PROPERTY, "NEAREST_FIFTY_CENTS");
+        final Amount amount = new Amount(Currency.AED, 2334.20);
+        assertThat(amount.getValueInCents(), is(233450));
     }
 
     @Test

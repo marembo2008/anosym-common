@@ -92,9 +92,9 @@ public final class Amount implements Comparable<Amount>, Serializable {
     private void checkAccuracyScaleAndMode() {
         final boolean invalidScale = centRoundingMode != SPECIFIED_ACCURACY && accuracyScale > 100;
         final boolean invalidMode = centRoundingMode == SPECIFIED_ACCURACY && accuracyScale <= 100;
-        checkState(!invalidMode && !invalidScale,
-                   "The accuracy scale and cent roundingmode are invalid: {%s != %s}",
-                   centRoundingMode, accuracyScale);
+        final boolean invalid = invalidScale || invalidMode;
+        checkState(!invalid, "The accuracy scale and cent roundingmode are invalid: {%s != %s}", centRoundingMode, accuracyScale);
+        checkState(accuracyScale % 10 == 0, "The accuracy scale {%s} must be in multiple of 10 cents, e.g. 10, 100, 1000", accuracyScale);
     }
 
     private Integer normalize(@Nonnull final Integer valueInCents) {
