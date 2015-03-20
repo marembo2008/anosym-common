@@ -154,6 +154,11 @@ public final class Amount implements Comparable<Amount>, Serializable {
     }
 
     @Nonnull
+    public Integer getIntegerValue() {
+        return getValue().intValue();
+    }
+
+    @Nonnull
     public CentRoundingMode getCentRoundingMode() {
         return centRoundingMode;
     }
