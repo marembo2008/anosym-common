@@ -47,12 +47,16 @@ public final class StringsUtil {
      * @param count
      * @return
      */
+    @Nonnull
     public static String group(@Nonnull final String sequence, final String separator, final int count) {
         checkNotNull(sequence, "the sequence must be specified");
         checkNotNull(separator, "the separator must be specified");
         checkArgument(count > 0, "the count must be greater than zero");
 
         final int sequenceLength = sequence.length();
+        if (sequenceLength <= count) {
+            return sequence;
+        }
         final Deque<String> deque = new ArrayDeque<>(sequenceLength / count + 1);
         int offset = sequenceLength - count;
         int endset = sequenceLength;
