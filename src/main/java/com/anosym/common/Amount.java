@@ -247,7 +247,7 @@ public final class Amount implements Comparable<Amount>, Serializable {
         final Integer wholeAmount = valueInCents / accuracyScale;
         final Integer cents = valueInCents % accuracyScale;
         final int scale = (int) log10(accuracyScale);
-        return format("%s.%0" + scale + "d", group(String.valueOf(wholeAmount), ", ", 3), cents);
+        return format("%s.%0" + scale + "d", group(String.valueOf(wholeAmount), ",", 3), cents);
     }
 
     @Override
