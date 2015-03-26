@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import static com.anosym.common.Amount.CentRoundingMode.SPECIFIED_ACCURACY;
+import static com.anosym.common.util.StringsUtil.group;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Math.log10;
@@ -246,7 +247,7 @@ public final class Amount implements Comparable<Amount>, Serializable {
         final Integer wholeAmount = valueInCents / accuracyScale;
         final Integer cents = valueInCents % accuracyScale;
         final int scale = (int) log10(accuracyScale);
-        return format("%03d.%0" + scale + "d", wholeAmount, cents);
+        return format("%s.%0" + scale + "d", group(String.valueOf(wholeAmount), ", ", 3), cents);
     }
 
     @Override
