@@ -246,7 +246,7 @@ public final class Amount implements Comparable<Amount>, Serializable {
         final Integer wholeAmount = valueInCents / accuracyScale;
         final Integer cents = valueInCents % accuracyScale;
         final int scale = (int) log10(accuracyScale);
-        return format("%d.%0" + scale + "d", wholeAmount, cents);
+        return format("%03d.%0" + scale + "d", wholeAmount, cents);
     }
 
     @Override
