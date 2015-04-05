@@ -191,7 +191,10 @@ public enum Currency {
     ZAR("Rand", "S", Country.SOUTH_AFRICA),
     ZMK("Kwacha", "894", Country.ZAMBIA),
     //OLD Ghanaian Cedi
-    GHC("Cedi", "GH¢", Country.GHANA);
+    GHC("Cedi", "GH¢", Country.GHANA),
+    //Another name for XOF
+    CFA("CFA Franc BCEAO", "952", Country.BENIN, Country.BURKINA_FASO, Country.IVORY_COAST, Country.GUINEA_BISSAU,
+        Country.MALI, Country.NIGER, Country.SENEGAL, Country.TOGO);
 
     private final String description;
     private final String symbol;
