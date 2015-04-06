@@ -157,7 +157,7 @@ public abstract class Printable implements Serializable {
                 Logger.getLogger(Printable.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return super.equals(obj);
+        return true;
     }
 
     /**
