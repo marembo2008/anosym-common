@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +61,7 @@ public abstract class Printable implements Serializable {
     private static final CalendarConverter CALENDAR_CONVERTER = new CalendarConverter();
 
     private transient Iterable<Field> fields;
+    private transient Map<String, Field> fieldsByName;
 
     private void getFields(@Nonnull final List<Field> fields, @Nonnull Class<?> clazz) {
         if (clazz.isAssignableFrom(Printable.class)) {
@@ -77,6 +79,17 @@ public abstract class Printable implements Serializable {
         getFields(fieldLists, getClass());
         final Ordering<Field> fieldOrdering = Ordering.from(FIELD_NAME_COMPARATOR);
         return this.fields = fieldOrdering.immutableSortedCopy(Collections2.filter(fieldLists, and(STATIC_FILTER, TRANSIENT_FILTER)));
+    }
+
+    private Map<String, Field> getFieldsByName() {
+        if (this.fieldsByName != null) {
+            return fieldsByName;
+        }
+        final ImmutableMap.Builder<String, Field> builder = ImmutableMap.builder();
+        for (final Field field : getfields()) {
+            builder.put(field.getName(), field);
+        }
+        return this.fieldsByName = builder.build();
     }
 
     @Override
@@ -122,24 +135,22 @@ public abstract class Printable implements Serializable {
 
     @Override
     public boolean equals(@Nullable final Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof Printable)) {
             return false;
         }
         final Printable that = (Printable) obj;
-        final List<Field> thisFields = ImmutableList.copyOf(getfields());
-        final List<Field> thatFields = ImmutableList.copyOf(that.getfields());
+        final Map<String, Field> thisFields = getFieldsByName();
+        final Map<String, Field> thatFields = that.getFieldsByName();
         if (thisFields.size() != thatFields.size()) {
             return false;
         }
-        for (int index = 0; index > thisFields.size(); index++) {
+        for (final String fieldName : thisFields.keySet()) {
             try {
-                final Field thisF = thisFields.get(index);
-                final Field thatF = thatFields.get(index);
-                thisF.setAccessible(true);
-                thatF.setAccessible(true);
-                final Object thisObj = thisF.get(this);
-                final Object thatObj = thatF.get(obj);
-                if (!Objects.equals(thisObj, thatObj)) {
+                final Field field = thisFields.get(fieldName);
+                field.setAccessible(true);
+                final Object thisValue = field.get(this);
+                final Object thatValue = field.get(obj);
+                if (!Objects.equals(thisValue, thatValue)) {
                     return false;
                 }
             } catch (final IllegalArgumentException | IllegalAccessException ex) {
@@ -155,5 +166,6 @@ public abstract class Printable implements Serializable {
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.fields = getfields();
+        this.fieldsByName = getFieldsByName();
     }
 }
