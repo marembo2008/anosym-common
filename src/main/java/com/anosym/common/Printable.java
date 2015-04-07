@@ -58,7 +58,8 @@ public abstract class Printable implements Serializable {
             return o1.getName().compareTo(o2.getName());
         }
     };
-    private static final CalendarConverter CALENDAR_CONVERTER = new CalendarConverter();
+
+    protected static final CalendarConverter CALENDAR_CONVERTER = new CalendarConverter();
 
     private transient Iterable<Field> fields;
     private transient Map<String, Field> fieldsByName;
@@ -71,7 +72,7 @@ public abstract class Printable implements Serializable {
         getFields(fields, clazz.getSuperclass());
     }
 
-    private Iterable<Field> getfields() {
+    protected Iterable<Field> getfields() {
         if (this.fields != null) {
             return this.fields;
         }
