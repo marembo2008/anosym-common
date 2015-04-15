@@ -260,6 +260,12 @@ public enum Country {
     //Special handling of non-country regions
     EUROPEAN_UNION("EU", "EU", "European Union", "300");
 
+    private static final List<Country> EUROPEAN_COUNTRIES = ImmutableList.of(
+            AUSTRIA, BELGIUM, BULGARIA, CROATIA, CYPRUS, CZECH_REPUBLIC, DENMARK, ESTONIA, FINLAND, FRANCE, GERMANY, GREECE, HUNGARY,
+            IRELAND, ITALY, LATVIA, LITHUANIA, LUXEMBOURG, MALTA, NETHERLANDS, POLAND, PORTUGAL, ROMANIA, SLOVAKIA, SLOVENIA, SPAIN, SWEDEN,
+            UNITED_KINGDOM
+    );
+
     private final String isoCode;
     private final String isoCode2;
     private final String name;
@@ -306,6 +312,10 @@ public enum Country {
     @Nonnull
     public List<Language> getLanguages() {
         return languages;
+    }
+
+    public boolean isEuropeanCountry() {
+        return EUROPEAN_COUNTRIES.contains(this);
     }
 
     @Nonnull
