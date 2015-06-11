@@ -1,7 +1,5 @@
 package com.anosym.common.util;
 
-import com.anosym.common.Currency;
-
 /**
  *
  * @author marembo
@@ -9,8 +7,6 @@ import com.anosym.common.Currency;
 public class CountryUtl {
 
     public static void main(String[] args) {
-        for (Currency c : Currency.values()) {
-            System.out.println(c.ordinal() + ":\t" + c.name());
-        }
+        System.out.println("Project:".compareTo("Project:ADMIN"));
     }
 }

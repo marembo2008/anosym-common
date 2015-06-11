@@ -5,7 +5,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
@@ -27,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlTransient;
 
 import static com.google.common.base.Predicates.and;
+import static com.google.common.collect.Collections2.filter;
 
 /**
  *
@@ -79,7 +79,7 @@ public abstract class Printable implements Serializable {
         final List<Field> fieldLists = Lists.newArrayList();
         getFields(fieldLists, getClass());
         final Ordering<Field> fieldOrdering = Ordering.from(FIELD_NAME_COMPARATOR);
-        return this.fields = fieldOrdering.immutableSortedCopy(Collections2.filter(fieldLists, and(STATIC_FILTER, TRANSIENT_FILTER)));
+        return this.fields = fieldOrdering.immutableSortedCopy(filter(fieldLists, and(STATIC_FILTER, TRANSIENT_FILTER)));
     }
 
     private Map<String, Field> getFieldsByName() {
@@ -117,6 +117,7 @@ public abstract class Printable implements Serializable {
 
     /**
      * Hashcode, as determined from all non-transient fields of the object.
+     *
      * @return
      */
     @Override
@@ -127,7 +128,7 @@ public abstract class Printable implements Serializable {
                 f.setAccessible(true);
                 Object value = f.get(this);
                 hash += Objects.hashCode(value);
-            } catch (final Exception e) {
+            } catch (final SecurityException | IllegalArgumentException | IllegalAccessException e) {
                 throw Throwables.propagate(e);
             }
         }
